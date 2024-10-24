@@ -10,6 +10,13 @@ const loadVideos = () => {
         .then((data) => displayVideos(data.videos))
         .catch((error) => console.log(error));
 };
+function loadcategoriesVideo(id){
+    // alert(id);
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category))
+    .catch((error) => console.log(error));
+}
 function getTimeString(time) {
     const year = Math.floor(time / 31536000); // 365 days in seconds
     const month = Math.floor((time % 31536000) / 2592000); // 30 days in seconds
@@ -50,16 +57,20 @@ const displayCategories = (categories) => {
     categories.forEach((item) => {
         console.log(item);
 
-        const button = document.createElement("button");
-        button.classList = "btn";
-        button.innerText = item.category;
+        const buttonContainer = document.createElement("div");
+        buttonContainer.innerHTML =`
+        <button onclick="loadcategoriesVideo(${item.category_id})" class="btn">
+        ${item.category}
+        </button>
+        `
 
-        categoryContainer.append(button);
+        categoryContainer.append(buttonContainer);
     });
 };
 
 const displayVideos = (videos) => {
     const videosContainer = document.getElementById("videos");
+    videosContainer.innerHTML = "";
     videos.forEach((video) => {
         console.log(video);
         const card = document.createElement("div");
@@ -70,7 +81,7 @@ const displayVideos = (videos) => {
       src=${video.thumbnail};
       alt="Shoes" />
       ${video.others.posted_date?.length == 0 ? "" : 
-        `<span class="w-100 absolute right-2 bottom-2 bg-black text-white rounded p-1">${getTimeString(video.others.posted_date)}</span>` }
+        `<span class="w-100 text-xs absolute right-2 bottom-2 bg-black text-white rounded p-1">${getTimeString(video.others.posted_date)}</span>` }
   </figure>
   <div class="px-0 py-2 flex gap-2">
     <div>

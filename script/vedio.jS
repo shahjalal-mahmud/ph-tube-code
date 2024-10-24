@@ -10,13 +10,25 @@ const loadVideos = () => {
         .then((data) => displayVideos(data.videos))
         .catch((error) => console.log(error));
 };
+const removeactiveclass = () => {
+    const buttons = document.getElementsByClassName("category-btn");
+    for(let btn of buttons){
+        btn.classList.remove("active");
+    }
+};
 function loadcategoriesVideo(id){
     // alert(id);
     fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
     .then((res) => res.json())
-    .then((data) => displayVideos(data.category))
+    .then((data) => {
+        removeactiveclass();
+        const activeBtn = document.getElementById(`btn-${id}`);
+        activeBtn.classList.add("active");
+        displayVideos(data.category)
+    })
     .catch((error) => console.log(error));
 }
+
 function getTimeString(time) {
     const year = Math.floor(time / 31536000); // 365 days in seconds
     const month = Math.floor((time % 31536000) / 2592000); // 30 days in seconds
@@ -59,7 +71,7 @@ const displayCategories = (categories) => {
 
         const buttonContainer = document.createElement("div");
         buttonContainer.innerHTML =`
-        <button onclick="loadcategoriesVideo(${item.category_id})" class="btn">
+        <button id="btn-${item.category_id}" onclick="loadcategoriesVideo(${item.category_id})" class="btn category-btn">
         ${item.category}
         </button>
         `
